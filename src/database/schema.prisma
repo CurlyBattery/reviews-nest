@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                        Int             @id @default(autoincrement())
+  email                     String          @unique
+  username                  String          @unique
+  hashPassword              String          @map("hash_password")
+  avatar                    String
+  role                      Role            @default(User)
+  permissions               Permission[]    @default([DeleteYourProfile])
+  currentHashedRefreshToken String?
+  userAndReview             UserReview[]
+  CommentReview             CommentReview[]
+  ResetToken                ResetToken[]
+
+  @@map("users")
+}
+
+enum Role {
+  Admin
+  User
+}
+
+enum Permission {
+  DeleteYourProfile
+  DeleteAllProfiles
+}
+
+model ResetToken {
+  id         Int      @id @default(autoincrement())
+  token      String
+  userId     Int      @map("user_id")
+  expireDate DateTime
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reset_tokens")
+}
+
+// model Token {
+//   id        Int      @id @default(autoincrement())
+//   userId    Int      @map("user_id")
+//   userAgent String   @map("user_agent")
+//   createdAt DateTime @default(now()) @map("created_at")
+//   updatedAt DateTime @updatedAt @map("updated_at")
+//
+//   @@map("tokens")
+// }
+
+model Review {
+  id            Int          @id @default(autoincrement())
+  title         String       @unique
+  preview       String
+  category      Category
+  text          String
+  isLaked       Boolean      @default(false)
+  isDislaked    Boolean      @default(false)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  userAndReview UserReview[]
+
+  @@map("reviews")
+}
+
+enum Category {
+  Book
+  Game
+  Movie
+}
+
+model UserReview {
+  id       Int    @id @default(autoincrement())
+  authorId Int    @map("author_id")
+  reviewId Int    @map("review_id")
+  user     User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@map("users_reviews")
+}
+
+model Comment {
+  id            Int             @id @default(autoincrement())
+  text          String
+  CommentReview CommentReview[]
+
+  @@map("comments")
+}
+
+model CommentReview {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @map("user_id")
+  commentId Int     @map("comment_id")
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@map("comments_reviews")
+}
