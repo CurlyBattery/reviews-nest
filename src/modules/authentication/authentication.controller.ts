@@ -17,12 +17,12 @@ import RequestWithUser from './requests/user.request';
 import { Response } from 'express';
 import JwtAuthenticationGuard from './guards/jwt.guard';
 import JwtRefreshGuard from './guards/refresh.guard';
-import { ActualUser } from '@app/decorators/user.decorator';
 import UserRequest from './requests/user.request';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { User } from '../../../generated/prisma';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ActualUser } from '@app/decorators';
 
 @Controller('authentication')
 export class AuthenticationController {
