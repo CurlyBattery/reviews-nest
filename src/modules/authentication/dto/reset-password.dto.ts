@@ -9,9 +9,6 @@ import { Match } from '@app/decorators';
 
 export class ResetPasswordDto {
   @IsString()
-  resetToken: string;
-
-  @IsString()
   @MinLength(4)
   @MaxLength(20)
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {

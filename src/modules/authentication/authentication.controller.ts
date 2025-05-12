@@ -139,14 +139,12 @@ export class AuthenticationController {
     return this.authenticationService.forgotPassword(forgotPasswordDto);
   }
 
-  //TODO: reset password
-  @Get('reset-password')
-  async getResetPassword(@Query('token') token: string) {
-    console.log(token);
-  }
-
   @Put('reset-password')
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authenticationService.resetPassword(resetPasswordDto);
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @Query('token') token: string,
+  ) {
+    console.log(token);
+    return this.authenticationService.resetPassword(resetPasswordDto, token);
   }
 }

@@ -140,17 +140,18 @@ export class AuthenticationService {
       },
     });
     //TODO: Send the link to the user by email
-    this.mailService.sendPasswordResetEmail(
+    await this.mailService.sendPasswordResetEmail(
       forgotPasswordDto.email,
       resetToken,
     );
+    return { message: 'success' };
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+  async resetPassword(resetPasswordDto: ResetPasswordDto, resetToken: string) {
     //TODO: Find a valid token in DB
     const [token] = await this.resetTokenRepository.getResetTokens({
       where: {
-        token: resetPasswordDto.resetToken,
+        token: resetToken,
         expireDate: {
           gte: new Date(Date.now()),
         },

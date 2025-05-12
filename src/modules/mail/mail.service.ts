@@ -16,7 +16,7 @@ export class MailService {
   }
 
   async sendPasswordResetEmail(to: string, token: string) {
-    const resetLink = `http://localhost:3000/api/authentication/reset-password?token=${token}`;
+    const resetLink = `http://localhost:5173/reset-password/${token}`;
     const mailOptions = {
       from: 'artyomkosyrev@yandex.ru',
       to,
