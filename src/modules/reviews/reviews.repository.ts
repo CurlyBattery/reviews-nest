@@ -1,6 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { Prisma, Review, User, UserReview } from 'generated/prisma';
+import {
+  Dislike,
+  Like,
+  Prisma,
+  Review,
+  User,
+  UserReview,
+} from 'generated/prisma';
 
 @Injectable()
 export class ReviewsRepository {
@@ -76,5 +83,81 @@ export class ReviewsRepository {
   }): Promise<Review> {
     const { where, select } = params;
     return this.prisma.review.delete({ where, select });
+  }
+
+  async createLike(params: {
+    data: Prisma.LikeUncheckedCreateInput;
+  }): Promise<Like> {
+    const { data } = params;
+    const like = await this.prisma.like.create({
+      data,
+    });
+    return like;
+  }
+
+  async getLikes(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.LikeWhereUniqueInput;
+    where?: Prisma.LikeWhereInput;
+    orderBy?: Prisma.LikeOrderByWithRelationInput;
+    select?: Prisma.LikeSelect;
+  }): Promise<Like[]> {
+    const { skip, take, cursor, where, orderBy, select } = params;
+
+    return this.prisma.like.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+      select,
+    });
+  }
+
+  async deleteLike(params: {
+    where: Prisma.LikeWhereUniqueInput;
+    select?: Prisma.LikeSelect;
+  }): Promise<Like> {
+    const { where, select } = params;
+    return this.prisma.like.delete({ where, select });
+  }
+
+  async createDislike(params: {
+    data: Prisma.DislikeUncheckedCreateInput;
+  }): Promise<Dislike> {
+    const { data } = params;
+    const dislike = await this.prisma.dislike.create({
+      data,
+    });
+    return dislike;
+  }
+
+  async getDislikes(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.DislikeWhereUniqueInput;
+    where?: Prisma.DislikeWhereInput;
+    orderBy?: Prisma.DislikeOrderByWithRelationInput;
+    select?: Prisma.DislikeSelect;
+  }): Promise<Dislike[]> {
+    const { skip, take, cursor, where, orderBy, select } = params;
+
+    return this.prisma.dislike.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+      select,
+    });
+  }
+
+  async deleteDislike(params: {
+    where: Prisma.DislikeWhereUniqueInput;
+    select?: Prisma.DislikeSelect;
+  }): Promise<Dislike> {
+    const { where, select } = params;
+    return this.prisma.dislike.delete({ where, select });
   }
 }

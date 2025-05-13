@@ -120,4 +120,74 @@ export class ReviewsService {
     }
     return deletedReview;
   }
+
+  async like(id: number, isActive: boolean, userId: number) {
+    const [existsReview] = await this.repository.getReviews({
+      where: { id },
+    });
+    if (!existsReview) {
+      throw new NotFoundException('Review not found');
+    }
+    const [existsLike] = await this.repository.getLikes({
+      where: {
+        AND: [{ userId }, { reviewId: id }],
+      },
+    });
+    if (existsLike && isActive) {
+      throw new ConflictException('Like already given');
+    }
+    if (existsLike && !isActive) {
+      const deletedLike = await this.repository.deleteLike({
+        where: {
+          id: existsLike.id,
+        },
+      });
+      return deletedLike;
+    }
+    if (!existsLike && !isActive) {
+      throw new NotFoundException('Like not found');
+    }
+    const like = await this.repository.createLike({
+      data: {
+        reviewId: id,
+        userId,
+      },
+    });
+    return like;
+  }
+
+  async dislike(id: number, isActive: boolean, userId: number) {
+    const [existsReview] = await this.repository.getReviews({
+      where: { id },
+    });
+    if (!existsReview) {
+      throw new NotFoundException('Review not found');
+    }
+    const [existsDislike] = await this.repository.getDislikes({
+      where: {
+        AND: [{ userId }, { reviewId: id }],
+      },
+    });
+    if (existsDislike && isActive) {
+      throw new ConflictException('Dislike already given');
+    }
+    if (existsDislike && !isActive) {
+      const deletedDislike = await this.repository.deleteDislike({
+        where: {
+          id: existsDislike.id,
+        },
+      });
+      return deletedDislike;
+    }
+    if (!existsDislike && !isActive) {
+      throw new NotFoundException('Dislike not found');
+    }
+    const dislike = await this.repository.createDislike({
+      data: {
+        reviewId: id,
+        userId,
+      },
+    });
+    return dislike;
+  }
 }

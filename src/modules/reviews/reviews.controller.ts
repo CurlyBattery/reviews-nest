@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -49,5 +50,23 @@ export class ReviewsController {
   @Delete(':id')
   deleteReview(@Param('id') reviewId: number, @ActualUser() user) {
     return this.reviewsService.deleteReview(+reviewId, user.id);
+  }
+
+  @Post(':id/like')
+  like(
+    @Query('isActive') isActive: boolean,
+    @Param('id', ParseIntPipe) id: number,
+    @ActualUser() user,
+  ) {
+    return this.reviewsService.like(id, isActive, user.id);
+  }
+
+  @Post(':id/dislike')
+  dislike(
+    @Query('isActive') isActive: boolean,
+    @Param('id', ParseIntPipe) id: number,
+    @ActualUser() user,
+  ) {
+    return this.reviewsService.dislike(id, isActive, user.id);
   }
 }

@@ -17,9 +17,11 @@ model User {
   role                      Role            @default(User)
   permissions               Permission[]    @default([DeleteYourProfile])
   currentHashedRefreshToken String?
-  userAndReview             UserReview[]
-  CommentReview             CommentReview[]
-  ResetToken                ResetToken[]
+  userAndReviews            UserReview[]
+  commentReviews            CommentReview[]
+  resetTokens               ResetToken[]
+  likes                     Like[]
+  dislikes                  Dislike[]
 
   @@map("users")
 }
@@ -45,18 +47,40 @@ model ResetToken {
 }
 
 model Review {
-  id            Int          @id @default(autoincrement())
-  title         String       @unique
-  preview       String
-  category      Category
-  text          String
-  isLaked       Boolean      @default(false)
-  isDislaked    Boolean      @default(false)
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime     @updatedAt @map("updated_at")
-  userAndReview UserReview[]
+  id             Int          @id @default(autoincrement())
+  title          String       @unique
+  preview        String
+  category       Category
+  text           String
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  userAndReviews UserReview[]
+  likes          Like[]
+  dislikes       Dislike[]
 
   @@map("reviews")
+}
+
+model Like {
+  id       Int    @id @default(autoincrement())
+  userId   Int    @map("user_id")
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewId Int    @map("review_id")
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@map("likes")
+}
+
+model Dislike {
+  id       Int    @id @default(autoincrement())
+  userId   Int    @map("user_id")
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewId Int    @map("review_id")
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@map("dislikes")
 }
 
 enum Category {
@@ -76,9 +100,9 @@ model UserReview {
 }
 
 model Comment {
-  id            Int             @id @default(autoincrement())
-  text          String
-  CommentReview CommentReview[]
+  id             Int             @id @default(autoincrement())
+  text           String
+  commentReviews CommentReview[]
 
   @@map("comments")
 }
