@@ -8,7 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { Permission, Role, User } from '../../../../generated/prisma';
+import { Role, User } from '../../../../generated/prisma';
 import { Match } from '@app/decorators';
 
 export class RegisterDto {
@@ -44,8 +44,4 @@ export class RegisterDto {
   @IsEnum(Role)
   @IsOptional()
   role?: User[`role`];
-
-  @IsEnum(Permission, { each: true })
-  @IsOptional()
-  permissions?: User[`permissions`];
 }

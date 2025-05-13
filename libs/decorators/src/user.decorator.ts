@@ -6,7 +6,6 @@ export const ActualUser = createParamDecorator(
     const user = request.user;
     user.hashPassword = undefined;
     user.currentHashedRefreshToken = undefined;
-    user.permissions = undefined;
     return user;
   },
 );

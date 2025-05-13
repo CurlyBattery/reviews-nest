@@ -39,14 +39,23 @@ export class ReviewsService {
     return createdReview;
   }
 
-  async getReviews({ limit, offset, startingId }: PaginationParamsDto) {
-    return this.repository.getReviews({
+  async getReviews({ limit = 10, offset = 0 }: PaginationParamsDto) {
+    const reviews = await this.repository.getReviews({
       take: limit,
       skip: offset,
-      cursor: {
-        id: startingId ?? 1,
+      include: {
+        likes: true,
+        dislikes: true,
       },
     });
+    const total = await this.repository.getReviewsCount();
+    return {
+      data: reviews,
+      total,
+      limit,
+      offset,
+      nextPage: total > offset ? offset + limit : null,
+    };
   }
 
   async getMyReviews(authorId: number) {

@@ -3,8 +3,6 @@ import {
   Get,
   Patch,
   Param,
-  ParseIntPipe,
-  Post,
   Body,
   Query,
   Delete,
@@ -15,9 +13,7 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SearchUsersDto } from './dto/search-users.dto';
-import { Permission } from '../../../generated/prisma';
 import JwtAuthenticationGuard from '../authentication/guards/jwt.guard';
-import PermissionGuard from '../authentication/guards/permissions.guard';
 import { ActualUser } from '@app/decorators/user.decorator';
 import UserRequest from '../authentication/requests/user.request';
 
@@ -39,13 +35,12 @@ export class UsersController {
     @Body() dto: UpdateUserDto,
     @ActualUser() user: UserRequest,
   ) {
-    console.log(user); // добавить проверку что обновляет текущий пользователь
-    return this.usersService.updateUser(+id, dto);
+    return this.usersService.updateUser(+id, dto, user['id']);
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Delete(':id')
-  @UseGuards(PermissionGuard(Permission.DeleteYourProfile))
-  deleteUser(@Param('id') id: number) {
-    return this.usersService.delete(id);
+  deleteUser(@Param('id') id: number, @ActualUser() user: UserRequest) {
+    return this.usersService.delete(id, user['id']);
   }
 }

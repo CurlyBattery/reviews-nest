@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -32,7 +33,6 @@ export class UsersService {
         username: dto.username,
         avatar: dto.avatar,
         role: dto.role!,
-        permissions: dto.permissions!,
       },
     });
   }
@@ -108,10 +108,14 @@ export class UsersService {
     });
   }
 
-  async updateUser(id: number, dto: UpdateUserDto) {
-    const existsUser = await this.repository.getUsers({ where: { id } });
-    if (!existsUser || existsUser.length === 0) {
+  async updateUser(id: number, dto: UpdateUserDto, actualUserId: number) {
+    const [existsUser] = await this.repository.getUsers({ where: { id } });
+    if (!existsUser) {
       throw new NotFoundException('User not found');
+    }
+
+    if (actualUserId !== existsUser.id) {
+      throw new ForbiddenException('Access denied');
     }
 
     const updatedUser = await this.repository.updateUser({
@@ -125,15 +129,18 @@ export class UsersService {
     }
     updatedUser.hashPassword = undefined;
     updatedUser.currentHashedRefreshToken = undefined;
-    updatedUser.permissions = undefined;
     updatedUser.role = undefined;
     return updatedUser;
   }
 
-  async delete(id: number): Promise<Users> {
-    const existsUser = await this.repository.getUsers({ where: { id } });
-    if (!existsUser || existsUser.length === 0) {
+  async delete(id: number, userId: number): Promise<Users> {
+    const [existsUser] = await this.repository.getUsers({ where: { id } });
+    if (!existsUser) {
       throw new NotFoundException('User not found');
+    }
+
+    if (userId !== existsUser.id) {
+      throw new ForbiddenException('Access denied');
     }
 
     const deletedUser = await this.repository.deleteUser({

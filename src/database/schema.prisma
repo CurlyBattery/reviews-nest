@@ -15,7 +15,6 @@ model User {
   hashPassword              String          @map("hash_password")
   avatar                    String
   role                      Role            @default(User)
-  permissions               Permission[]    @default([DeleteYourProfile])
   currentHashedRefreshToken String?
   userAndReviews            UserReview[]
   commentReviews            CommentReview[]
@@ -29,11 +28,6 @@ model User {
 enum Role {
   Admin
   User
-}
-
-enum Permission {
-  DeleteYourProfile
-  DeleteAllProfiles
 }
 
 model ResetToken {

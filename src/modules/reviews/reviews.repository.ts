@@ -36,17 +36,33 @@ export class ReviewsRepository {
     where?: Prisma.ReviewWhereInput;
     orderBy?: Prisma.ReviewOrderByWithRelationInput;
     select?: Prisma.ReviewSelect;
+    include?: Prisma.ReviewInclude;
   }): Promise<Review[]> {
-    const { skip, take, cursor, where, orderBy, select } = params;
+    const { skip, take, cursor, where, orderBy, select, include } = params;
 
-    return this.prisma.review.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-      select,
-    });
+    if (include) {
+      return this.prisma.review.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+        include,
+      });
+    } else {
+      return this.prisma.review.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+        select,
+      });
+    }
+  }
+
+  async getReviewsCount() {
+    return this.prisma.review.count();
   }
 
   async getUserReviews(params: {

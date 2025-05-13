@@ -15,7 +15,6 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { PaginationParamsDto } from './dto/pagination-params.dto';
 import JwtAuthenticationGuard from '../authentication/guards/jwt.guard';
 import { ActualUser } from '@app/decorators';
-import UserRequest from '../authentication/requests/user.request';
 import { UpdateReviewDto } from './dto/update-review.dto';
 
 @UseGuards(JwtAuthenticationGuard)

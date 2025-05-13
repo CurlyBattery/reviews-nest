@@ -38,7 +38,6 @@ export class AuthenticationService {
     });
     createdUser.hashPassword = undefined;
     createdUser.currentHashedRefreshToken = undefined;
-    createdUser.permissions = undefined;
     createdUser.role = undefined;
     return createdUser;
   }
@@ -49,7 +48,6 @@ export class AuthenticationService {
       await this.verifyPassword(hashPassword, user.hashPassword);
       user.hashPassword = undefined;
       user.currentHashedRefreshToken = undefined;
-      user.permissions = undefined;
       user.role = undefined;
       return user;
     } catch (error) {
@@ -112,12 +110,15 @@ export class AuthenticationService {
       changePasswordDto.newPassword,
       16,
     );
-    const updatedUser = await this.usersService.updateUser(findUser.id, {
-      hashPassword: newHashPassword,
-    });
+    const updatedUser = await this.usersService.updateUser(
+      findUser.id,
+      {
+        hashPassword: newHashPassword,
+      },
+      user['id'],
+    );
     updatedUser.hashPassword = undefined;
     updatedUser.currentHashedRefreshToken = undefined;
-    updatedUser.permissions = undefined;
     updatedUser.role = undefined;
     return updatedUser;
   }
@@ -147,7 +148,11 @@ export class AuthenticationService {
     return { message: 'success' };
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto, resetToken: string) {
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDto,
+    resetToken: string,
+    actualUserId: number,
+  ) {
     //TODO: Find a valid token in DB
     const [token] = await this.resetTokenRepository.getResetTokens({
       where: {
@@ -163,12 +168,15 @@ export class AuthenticationService {
     }
     //TODO: Change user password
     const newHashPassword = await Scrypt.hash(resetPasswordDto.newPassword, 16);
-    const updatedUser = await this.usersService.updateUser(token.userId, {
-      hashPassword: newHashPassword,
-    });
+    const updatedUser = await this.usersService.updateUser(
+      token.userId,
+      {
+        hashPassword: newHashPassword,
+      },
+      actualUserId,
+    );
     updatedUser.hashPassword = undefined;
     updatedUser.currentHashedRefreshToken = undefined;
-    updatedUser.permissions = undefined;
     updatedUser.role = undefined;
     return updatedUser;
   }
