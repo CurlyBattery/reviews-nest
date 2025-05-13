@@ -123,6 +123,10 @@ export class UsersService {
     if (!updatedUser) {
       throw new BadRequestException('User failed to update');
     }
+    updatedUser.hashPassword = undefined;
+    updatedUser.currentHashedRefreshToken = undefined;
+    updatedUser.permissions = undefined;
+    updatedUser.role = undefined;
     return updatedUser;
   }
 

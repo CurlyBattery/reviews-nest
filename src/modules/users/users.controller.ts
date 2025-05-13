@@ -26,6 +26,7 @@ import UserRequest from '../authentication/requests/user.request';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get()
   getUsers(@Query() searchDto: SearchUsersDto) {
     return this.usersService.search(searchDto);
@@ -38,7 +39,7 @@ export class UsersController {
     @Body() dto: UpdateUserDto,
     @ActualUser() user: UserRequest,
   ) {
-    console.log(user);
+    console.log(user); // добавить проверку что обновляет текущий пользователь
     return this.usersService.updateUser(+id, dto);
   }
 

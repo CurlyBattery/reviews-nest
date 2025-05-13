@@ -44,16 +44,6 @@ model ResetToken {
   @@map("reset_tokens")
 }
 
-// model Token {
-//   id        Int      @id @default(autoincrement())
-//   userId    Int      @map("user_id")
-//   userAgent String   @map("user_agent")
-//   createdAt DateTime @default(now()) @map("created_at")
-//   updatedAt DateTime @updatedAt @map("updated_at")
-//
-//   @@map("tokens")
-// }
-
 model Review {
   id            Int          @id @default(autoincrement())
   title         String       @unique
