@@ -143,13 +143,7 @@ export class AuthenticationController {
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
     @Query('token') token: string,
-    @ActualUser() user: User,
   ) {
-    console.log(token);
-    return this.authenticationService.resetPassword(
-      resetPasswordDto,
-      token,
-      user['id'],
-    );
+    return this.authenticationService.resetPassword(resetPasswordDto, token);
   }
 }

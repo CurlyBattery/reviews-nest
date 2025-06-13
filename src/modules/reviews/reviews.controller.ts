@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
   Query,
@@ -37,7 +38,7 @@ export class ReviewsController {
     return this.reviewsService.getMyReviews(user.id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   updateReview(
     @Param('id') reviewId: number,
     @Body() dto: UpdateReviewDto,

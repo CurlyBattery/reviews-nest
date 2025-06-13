@@ -22,7 +22,6 @@ import UserRequest from '../authentication/requests/user.request';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthenticationGuard)
   @Get()
   getUsers(@Query() searchDto: SearchUsersDto) {
     return this.usersService.search(searchDto);

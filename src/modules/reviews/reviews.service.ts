@@ -156,6 +156,19 @@ export class ReviewsService {
     if (!existsLike && !isActive) {
       throw new NotFoundException('Like not found');
     }
+    const [existsDislike] = await this.repository.getDislikes({
+      where: {
+        AND: [{ userId }, { reviewId: id }],
+      },
+    });
+    console.log(existsDislike);
+    if (existsDislike) {
+      await this.repository.deleteDislike({
+        where: {
+          id: existsDislike.id,
+        },
+      });
+    }
     const like = await this.repository.createLike({
       data: {
         reviewId: id,
@@ -190,6 +203,18 @@ export class ReviewsService {
     }
     if (!existsDislike && !isActive) {
       throw new NotFoundException('Dislike not found');
+    }
+    const [existsLike] = await this.repository.getLikes({
+      where: {
+        AND: [{ userId }, { reviewId: id }],
+      },
+    });
+    if (existsLike) {
+      await this.repository.deleteLike({
+        where: {
+          id: existsLike.id,
+        },
+      });
     }
     const dislike = await this.repository.createDislike({
       data: {

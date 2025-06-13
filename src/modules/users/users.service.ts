@@ -49,6 +49,22 @@ export class UsersService {
 
   async search(searchDto: SearchUsersDto): Promise<Users[]> {
     const where = this.transformQueryToWhere(searchDto);
+    let isWhereUndefined = false;
+    let count = 0;
+    where.OR.forEach((or) => {
+      if (or[`${Object.keys(or)}`] === undefined) {
+        isWhereUndefined = true;
+        count++;
+      }
+      if (count !== where.OR.length) {
+        isWhereUndefined = false;
+      }
+    });
+    if (isWhereUndefined) {
+      return await this.repository.getUsers({
+        select: UsersSelect,
+      });
+    }
     return await this.repository.getUsers({
       where,
       select: UsersSelect,
@@ -108,14 +124,16 @@ export class UsersService {
     });
   }
 
-  async updateUser(id: number, dto: UpdateUserDto, actualUserId: number) {
+  async updateUser(id: number, dto: UpdateUserDto, actualUserId?: number) {
     const [existsUser] = await this.repository.getUsers({ where: { id } });
     if (!existsUser) {
       throw new NotFoundException('User not found');
     }
 
-    if (actualUserId !== existsUser.id) {
-      throw new ForbiddenException('Access denied');
+    if (actualUserId) {
+      if (actualUserId !== existsUser.id) {
+        throw new ForbiddenException('Access denied');
+      }
     }
 
     const updatedUser = await this.repository.updateUser({

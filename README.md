@@ -2,21 +2,21 @@
 
 ## Start Development
 ```bash
-$ cp .env.example .env
+$ yarn copy:env
 ```
 
 ```bash
-$ npm install
+$ yarn
 ```
 
 ```bash
-$ docker-compose up -d
+$ yarn docker:run
 ```
 
 ```bash
-$ npm run migrate
+$ yarn migrate
 ```
 
 ```bash
-$ npm run start:dev
+$ yarn start:dev
 ```

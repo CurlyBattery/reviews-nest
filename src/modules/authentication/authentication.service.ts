@@ -148,11 +148,7 @@ export class AuthenticationService {
     return { message: 'success' };
   }
 
-  async resetPassword(
-    resetPasswordDto: ResetPasswordDto,
-    resetToken: string,
-    actualUserId: number,
-  ) {
+  async resetPassword(resetPasswordDto: ResetPasswordDto, resetToken: string) {
     //TODO: Find a valid token in DB
     const [token] = await this.resetTokenRepository.getResetTokens({
       where: {
@@ -168,13 +164,9 @@ export class AuthenticationService {
     }
     //TODO: Change user password
     const newHashPassword = await Scrypt.hash(resetPasswordDto.newPassword, 16);
-    const updatedUser = await this.usersService.updateUser(
-      token.userId,
-      {
-        hashPassword: newHashPassword,
-      },
-      actualUserId,
-    );
+    const updatedUser = await this.usersService.updateUser(token.userId, {
+      hashPassword: newHashPassword,
+    });
     updatedUser.hashPassword = undefined;
     updatedUser.currentHashedRefreshToken = undefined;
     updatedUser.role = undefined;
