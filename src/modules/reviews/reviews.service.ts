@@ -70,6 +70,7 @@ export class ReviewsService {
 
     return reviews.map((review) => {
       return {
+        id: review['review'].id,
         title: review['review'].title,
         category: review['review'].category,
         text: review['review'].text,
