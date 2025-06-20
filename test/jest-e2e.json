@@ -14,6 +14,8 @@
     "@app/decorators/(.*)": "<rootDir>/../libs/decorators/src/$1",
     "@app/decorators": "<rootDir>/../libs/decorators/src",
     "@app/hash/(.*)": "<rootDir>/../libs/hash/src/$1",
-    "@app/hash": "<rootDir>/../libs/hash/src"
+    "@app/hash": "<rootDir>/../libs/hash/src",
+    "@app/pipes/(.*)": "<rootDir>/../libs/pipes/src/$1",
+    "@app/pipes": "<rootDir>/../libs/pipes/src"
   }
 }

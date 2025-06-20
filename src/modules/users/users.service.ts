@@ -48,7 +48,7 @@ export class UsersService {
   }
 
   async search(searchDto: SearchUsersDto): Promise<Users[]> {
-    const where = this.transformQueryToWhere(searchDto);
+    const where = this.transformQueryToUsersWhere(searchDto);
     let isWhereUndefined = false;
     let count = 0;
     where.OR.forEach((or) => {
@@ -71,7 +71,7 @@ export class UsersService {
     });
   }
 
-  transformQueryToWhere(searchDto: SearchUsersDto) {
+  private transformQueryToUsersWhere(searchDto: SearchUsersDto) {
     return {
       OR: [
         { id: searchDto.id! },

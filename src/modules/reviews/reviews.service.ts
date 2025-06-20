@@ -9,6 +9,10 @@ import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewsRepository } from './reviews.repository';
 import { PaginationParamsDto } from './dto/pagination-params.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { SearchReviewsDto } from './dto/search-reviews.dto';
+import { Reviews, ReviewsSelect } from './entity/review.select';
+import { UsersSelect } from '../users/entity/users.select';
+import { SearchUsersDto } from '../users/dto/search-users.dto';
 
 @Injectable()
 export class ReviewsService {
@@ -39,22 +43,41 @@ export class ReviewsService {
     return createdReview;
   }
 
-  async getReviews({ limit = 10, offset = 0 }: PaginationParamsDto) {
-    const reviews = await this.repository.getReviews({
-      take: limit,
-      skip: offset,
-      include: {
-        likes: true,
-        dislikes: true,
-      },
+  async search(searchDto: SearchReviewsDto): Promise<Reviews[]> {
+    const where = this.transformQueryToReviewsWhere(searchDto);
+    let isWhereUndefined = false;
+    let count = 0;
+    where.OR.forEach((or) => {
+      if (or[`${Object.keys(or)}`] === undefined) {
+        isWhereUndefined = true;
+        count++;
+      }
+      if (count !== where.OR.length) {
+        isWhereUndefined = false;
+      }
     });
-    const total = await this.repository.getReviewsCount();
+    if (isWhereUndefined) {
+      return await this.repository.getReviews({
+        select: ReviewsSelect,
+      });
+    }
+    return await this.repository.getReviews({
+      where,
+      select: ReviewsSelect,
+    });
+  }
+
+  private transformQueryToReviewsWhere(searchDto: SearchReviewsDto) {
     return {
-      data: reviews,
-      total,
-      limit,
-      offset,
-      nextPage: total > offset ? offset + limit : null,
+      OR: [
+        { id: searchDto.id! },
+        { title: searchDto.title! },
+        { preview: searchDto.preview! },
+        { category: searchDto.category! },
+        { text: searchDto.text! },
+        { createdAt: searchDto.createdAt! },
+        { updatedAt: searchDto.updatedAt! },
+      ],
     };
   }
 
@@ -225,4 +248,23 @@ export class ReviewsService {
     });
     return dislike;
   }
+
+  // async getReviews({ limit = 10, offset = 0 }: PaginationParamsDto) {
+  //   const reviews = await this.repository.getReviews({
+  //     take: limit,
+  //     skip: offset,
+  //     include: {
+  //       likes: true,
+  //       dislikes: true,
+  //     },
+  //   });
+  //   const total = await this.repository.getReviewsCount();
+  //   return {
+  //     data: reviews,
+  //     total,
+  //     limit,
+  //     offset,
+  //     nextPage: total > offset ? offset + limit : null,
+  //   };
+  // }
 }

@@ -7,16 +7,15 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
-import { PaginationParamsDto } from './dto/pagination-params.dto';
 import JwtAuthenticationGuard from '../authentication/guards/jwt.guard';
 import { ActualUser } from '@app/decorators';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { SearchReviewsDto } from './dto/search-reviews.dto';
 
 @UseGuards(JwtAuthenticationGuard)
 @Controller('reviews')
@@ -29,8 +28,8 @@ export class ReviewsController {
   }
 
   @Get()
-  getReviews(@Query() paginationParamsDto: PaginationParamsDto) {
-    return this.reviewsService.getReviews(paginationParamsDto);
+  getReviews(@Query() searchDto: SearchReviewsDto) {
+    return this.reviewsService.search(searchDto);
   }
 
   @Get('my')

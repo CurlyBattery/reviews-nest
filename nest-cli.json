@@ -24,6 +24,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/hash/tsconfig.lib.json"
       }
+    },
+    "pipes": {
+      "type": "library",
+      "root": "libs/pipes",
+      "entryFile": "index",
+      "sourceRoot": "libs/pipes/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/pipes/tsconfig.lib.json"
+      }
     }
   }
 }

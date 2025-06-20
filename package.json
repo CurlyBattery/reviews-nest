@@ -24,7 +24,6 @@
     "studio": "npx prisma studio",
     "docker:run": "docker-compose up -d",
     "copy:env": "cp .env.example .env"
-
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -94,7 +93,8 @@
     ],
     "moduleNameMapper": {
       "^@app/decorators(|/.*)$": "<rootDir>/libs/decorators/src/$1",
-      "^@app/hash(|/.*)$": "<rootDir>/libs/hash/src/$1"
+      "^@app/hash(|/.*)$": "<rootDir>/libs/hash/src/$1",
+      "^@app/pipes(|/.*)$": "<rootDir>/libs/pipes/src/$1"
     }
   },
   "prisma": {
