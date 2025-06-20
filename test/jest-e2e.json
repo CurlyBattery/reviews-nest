@@ -16,6 +16,8 @@
     "@app/hash/(.*)": "<rootDir>/../libs/hash/src/$1",
     "@app/hash": "<rootDir>/../libs/hash/src",
     "@app/pipes/(.*)": "<rootDir>/../libs/pipes/src/$1",
-    "@app/pipes": "<rootDir>/../libs/pipes/src"
+    "@app/pipes": "<rootDir>/../libs/pipes/src",
+    "@app/dtos/(.*)": "<rootDir>/../libs/dtos/src/$1",
+    "@app/dtos": "<rootDir>/../libs/dtos/src"
   }
 }

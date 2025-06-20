@@ -7,6 +7,7 @@ import { AuthenticationModule } from './modules/authentication/authentication.mo
 import { MailModule } from './modules/mail/mail.module';
 import { PrismaModule } from './database/prisma.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
     MailModule,
     PrismaModule,
     ReviewsModule,
+    FilesModule,
   ],
   providers: [
     {

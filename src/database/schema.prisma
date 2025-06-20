@@ -13,9 +13,10 @@ model User {
   email                     String          @unique
   username                  String          @unique
   hashPassword              String          @map("hash_password")
-  avatar                    String
+  avatarId                  Int?            @map("avatar_id")
   role                      Role            @default(User)
   currentHashedRefreshToken String?
+  avatar                    File?           @relation(fields: [avatarId], references: [id], onDelete: Cascade)
   userAndReviews            UserReview[]
   commentReviews            CommentReview[]
   resetTokens               ResetToken[]
@@ -109,4 +110,13 @@ model CommentReview {
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@map("comments_reviews")
+}
+
+model File {
+  id       Int    @id @default(autoincrement())
+  filename String
+  data     Bytes
+  User     User[]
+
+  @@map("files")
 }

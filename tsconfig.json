@@ -29,6 +29,12 @@
       ],
       "@app/hash/*": [
         "libs/hash/src/*"
+      ],
+      "@app/dtos": [
+        "libs/dtos/src"
+      ],
+      "@app/dtos/*": [
+        "libs/dtos/src/*"
       ]
     }
   }

@@ -33,7 +33,7 @@ export class UsersRepository {
 
   async updateUser(params: {
     where: Prisma.UserWhereUniqueInput;
-    data: Prisma.UserUpdateInput;
+    data: Prisma.UserUncheckedUpdateInput;
   }): Promise<User> {
     const { where, data } = params;
     return this.prisma.user.update({ where, data });
@@ -45,5 +45,33 @@ export class UsersRepository {
   }): Promise<User> {
     const { where, select } = params;
     return this.prisma.user.delete({ where, select });
+  }
+
+  async transactionFindOneDeleteUploadAvatar(
+    userParams: {
+      where: Prisma.UserWhereUniqueInput;
+      select?: Prisma.UserSelect;
+    },
+    fileParams: { data: Prisma.FileCreateInput },
+  ) {
+    const { where, select } = userParams;
+    const { data } = fileParams;
+    return this.prisma.$transaction(async (transactionalPrisma) => {
+      const user = await transactionalPrisma.user.findUnique({ where, select });
+      const currentAvatarId = user.avatarId;
+      const avatar = await transactionalPrisma.file.create({ data });
+      await transactionalPrisma.user.update({
+        where,
+        data: { avatarId: avatar.id },
+      });
+      if (currentAvatarId) {
+        await transactionalPrisma.file.delete({
+          where: {
+            id: currentAvatarId,
+          },
+        });
+      }
+      return avatar;
+    });
   }
 }

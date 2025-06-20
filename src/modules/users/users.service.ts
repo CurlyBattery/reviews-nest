@@ -11,10 +11,15 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { SearchUsersDto } from './dto/search-users.dto';
 import { Users, UsersSelect } from './entity/users.select';
 import { Scrypt } from '@app/hash';
+import { FilesService } from '../files/files.service';
+import { UserNotFoundException } from './exception/user-not-found.exception';
 
 @Injectable()
 export class UsersService {
-  constructor(private repository: UsersRepository) {}
+  constructor(
+    private repository: UsersRepository,
+    private readonly filesService: FilesService,
+  ) {}
 
   async createUser(dto: CreateUserDto) {
     const existsUser = await this.repository.getUsers({
@@ -31,10 +36,31 @@ export class UsersService {
         hashPassword: dto.hashPassword,
         email: dto.email,
         username: dto.username,
-        avatar: dto.avatar,
         role: dto.role!,
       },
     });
+  }
+
+  async addAvatar(userId: number, imageBuffer: Buffer, filename: string) {
+    return await this.repository.transactionFindOneDeleteUploadAvatar(
+      {
+        where: { id: userId },
+      },
+      { data: { filename, data: imageBuffer } },
+    );
+  }
+
+  async deleteAvatar(userId: number) {
+    const [existsUser] = await this.repository.getUsers({
+      where: { id: userId },
+    });
+    if (!existsUser) {
+      throw new UserNotFoundException();
+    }
+    if (existsUser?.avatarId) {
+      return this.filesService.deleteFile(existsUser?.avatarId);
+    }
+    throw new BadRequestException('The user does not have an avatar');
   }
 
   async setCurrentRefreshToken(refreshToken: string, userId: number) {
@@ -85,7 +111,7 @@ export class UsersService {
   public async getUserByEmail(email: string) {
     const user = await this.repository.getUsers({ where: { email } });
     if (!user || user.length === 0) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFoundException();
     }
     return user;
   }
@@ -93,7 +119,7 @@ export class UsersService {
   public async getUserById(id: number) {
     const user = await this.repository.getUsers({ where: { id } });
     if (!user || user.length === 0) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFoundException();
     }
     return user;
   }
@@ -127,7 +153,7 @@ export class UsersService {
   async updateUser(id: number, dto: UpdateUserDto, actualUserId?: number) {
     const [existsUser] = await this.repository.getUsers({ where: { id } });
     if (!existsUser) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFoundException();
     }
 
     if (actualUserId) {
@@ -151,10 +177,10 @@ export class UsersService {
     return updatedUser;
   }
 
-  async delete(id: number, userId: number): Promise<Users> {
+  async deleteUser(id: number, userId: number): Promise<Users> {
     const [existsUser] = await this.repository.getUsers({ where: { id } });
     if (!existsUser) {
-      throw new NotFoundException('User not found');
+      throw new UserNotFoundException();
     }
 
     if (userId !== existsUser.id) {

@@ -16,6 +16,7 @@ import JwtAuthenticationGuard from '../authentication/guards/jwt.guard';
 import { ActualUser } from '@app/decorators';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { SearchReviewsDto } from './dto/search-reviews.dto';
+import { IdNumberParamDto } from '@app/dtos';
 
 @UseGuards(JwtAuthenticationGuard)
 @Controller('reviews')
@@ -39,33 +40,36 @@ export class ReviewsController {
 
   @Patch(':id')
   updateReview(
-    @Param('id') reviewId: number,
+    @Param() { id: reviewId }: IdNumberParamDto,
     @Body() dto: UpdateReviewDto,
     @ActualUser() user,
   ) {
-    return this.reviewsService.updateReview(+reviewId, dto, user.id);
+    return this.reviewsService.updateReview(Number(reviewId), dto, user.id);
   }
 
   @Delete(':id')
-  deleteReview(@Param('id') reviewId: number, @ActualUser() user) {
-    return this.reviewsService.deleteReview(+reviewId, user.id);
+  deleteReview(
+    @Param() { id: reviewId }: IdNumberParamDto,
+    @ActualUser() user,
+  ) {
+    return this.reviewsService.deleteReview(Number(reviewId), user.id);
   }
 
   @Post(':id/like')
   like(
     @Query('isActive') isActive: boolean,
-    @Param('id', ParseIntPipe) id: number,
+    @Param() { id }: IdNumberParamDto,
     @ActualUser() user,
   ) {
-    return this.reviewsService.like(id, isActive, user.id);
+    return this.reviewsService.like(Number(id), isActive, user.id);
   }
 
   @Post(':id/dislike')
   dislike(
     @Query('isActive') isActive: boolean,
-    @Param('id', ParseIntPipe) id: number,
+    @Param() { id }: IdNumberParamDto,
     @ActualUser() user,
   ) {
-    return this.reviewsService.dislike(id, isActive, user.id);
+    return this.reviewsService.dislike(Number(id), isActive, user.id);
   }
 }

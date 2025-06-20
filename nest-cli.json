@@ -25,13 +25,13 @@
         "tsConfigPath": "libs/hash/tsconfig.lib.json"
       }
     },
-    "pipes": {
+    "dtos": {
       "type": "library",
-      "root": "libs/pipes",
+      "root": "libs/dtos",
       "entryFile": "index",
-      "sourceRoot": "libs/pipes/src",
+      "sourceRoot": "libs/dtos/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/pipes/tsconfig.lib.json"
+        "tsConfigPath": "libs/dtos/tsconfig.lib.json"
       }
     }
   }

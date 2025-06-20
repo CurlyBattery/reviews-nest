@@ -9,6 +9,8 @@ import {
   UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Post,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,11 +18,19 @@ import { SearchUsersDto } from './dto/search-users.dto';
 import JwtAuthenticationGuard from '../authentication/guards/jwt.guard';
 import { ActualUser } from '@app/decorators/user.decorator';
 import UserRequest from '../authentication/requests/user.request';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Delete('avatar')
+  @UseGuards(JwtAuthenticationGuard)
+  async deleteAvatar(@ActualUser() user: UserRequest) {
+    return this.usersService.deleteAvatar(user['id']);
+  }
 
   @Get()
   getUsers(@Query() searchDto: SearchUsersDto) {
@@ -40,6 +50,20 @@ export class UsersController {
   @UseGuards(JwtAuthenticationGuard)
   @Delete(':id')
   deleteUser(@Param('id') id: number, @ActualUser() user: UserRequest) {
-    return this.usersService.delete(id, user['id']);
+    return this.usersService.deleteUser(id, user['id']);
+  }
+
+  @Post('avatar')
+  @UseGuards(JwtAuthenticationGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  async addAvatar(
+    @ActualUser() user: UserRequest,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.usersService.addAvatar(
+      user['id'],
+      file.buffer,
+      file.originalname,
+    );
   }
 }

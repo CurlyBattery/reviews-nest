@@ -37,10 +37,6 @@ export class RegisterDto {
   })
   repeatPassword: string;
 
-  @IsString()
-  @IsNotEmpty()
-  avatar: User[`avatar`];
-
   @IsEnum(Role)
   @IsOptional()
   role?: User[`role`];
