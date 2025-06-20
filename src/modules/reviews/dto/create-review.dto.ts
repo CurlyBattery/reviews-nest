@@ -7,10 +7,6 @@ export class CreateReviewDto {
   @MinLength(1)
   title: string;
 
-  @IsString()
-  @IsNotEmpty()
-  preview: string;
-
   @IsEnum(Category)
   @IsNotEmpty()
   category: Category;

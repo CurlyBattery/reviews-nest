@@ -14,7 +14,7 @@ export class ReviewsRepository {
   constructor(private prisma: PrismaService) {}
 
   async createReview(params: {
-    data: Prisma.ReviewCreateInput;
+    data: Prisma.ReviewUncheckedCreateInput;
   }): Promise<Review> {
     const { data } = params;
     const review = await this.prisma.review.create({ data });

@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -17,6 +19,8 @@ import { ActualUser } from '@app/decorators';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { SearchReviewsDto } from './dto/search-reviews.dto';
 import { IdNumberParamDto } from '@app/dtos';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @UseGuards(JwtAuthenticationGuard)
 @Controller('reviews')
@@ -24,8 +28,18 @@ export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post()
-  createReview(@Body() createReviewDto: CreateReviewDto, @ActualUser() user) {
-    return this.reviewsService.createReview(createReviewDto, user.id);
+  @UseInterceptors(FileInterceptor('file'))
+  createReview(
+    @Body() createReviewDto: CreateReviewDto,
+    @ActualUser() user,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.reviewsService.createReview(
+      createReviewDto,
+      user.id,
+      file.buffer,
+      file.originalname,
+    );
   }
 
   @Get()

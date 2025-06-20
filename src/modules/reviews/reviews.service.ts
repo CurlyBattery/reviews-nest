@@ -13,12 +13,21 @@ import { SearchReviewsDto } from './dto/search-reviews.dto';
 import { Reviews, ReviewsSelect } from './entity/review.select';
 import { UsersSelect } from '../users/entity/users.select';
 import { SearchUsersDto } from '../users/dto/search-users.dto';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class ReviewsService {
-  constructor(private repository: ReviewsRepository) {}
+  constructor(
+    private repository: ReviewsRepository,
+    private readonly filesService: FilesService,
+  ) {}
 
-  async createReview(dto: CreateReviewDto, authorId) {
+  async createReview(
+    dto: CreateReviewDto,
+    authorId: number,
+    imageBuffer: Buffer,
+    filename: string,
+  ) {
     const [review] = await this.repository.getReviews({
       where: { title: dto.title },
     });
@@ -26,10 +35,12 @@ export class ReviewsService {
       throw new ConflictException('Review already exists');
     }
 
+    const preview = await this.filesService.uploadFile(imageBuffer, filename);
+
     const createdReview = await this.repository.createReview({
       data: {
         title: dto.title,
-        preview: dto.preview,
+        previewId: preview.id,
         category: dto.category,
         text: dto.text,
       },
@@ -43,7 +54,7 @@ export class ReviewsService {
     return createdReview;
   }
 
-  async search(searchDto: SearchReviewsDto): Promise<Reviews[]> {
+  async search(searchDto: SearchReviewsDto) {
     const where = this.transformQueryToReviewsWhere(searchDto);
     let isWhereUndefined = false;
     let count = 0;
@@ -72,7 +83,6 @@ export class ReviewsService {
       OR: [
         { id: searchDto.id! },
         { title: searchDto.title! },
-        { preview: searchDto.preview! },
         { category: searchDto.category! },
         { text: searchDto.text! },
         { createdAt: searchDto.createdAt! },

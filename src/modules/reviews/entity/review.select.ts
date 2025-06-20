@@ -3,7 +3,7 @@ import { type Prisma } from '../../../../generated/prisma';
 export const ReviewsSelect = {
   id: true,
   title: true,
-  preview: true,
+  previewId: true,
   category: true,
   text: true,
   createdAt: true,

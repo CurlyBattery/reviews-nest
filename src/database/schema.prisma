@@ -44,7 +44,8 @@ model ResetToken {
 model Review {
   id             Int          @id @default(autoincrement())
   title          String       @unique
-  preview        String
+  previewId      Int?         @map("preview_id")
+  preview        File?        @relation(fields: [previewId], references: [id], onDelete: Cascade)
   category       Category
   text           String
   createdAt      DateTime     @default(now()) @map("created_at")
@@ -113,10 +114,11 @@ model CommentReview {
 }
 
 model File {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   filename String
   data     Bytes
   User     User[]
+  Review   Review[]
 
   @@map("files")
 }
