@@ -60,10 +60,11 @@ export class UsersController {
     @ActualUser() user: UserRequest,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersService.addAvatar(
+    await this.usersService.addAvatar(
       user['id'],
       file.buffer,
       file.originalname,
     );
+    return { message: 'Avatar successfully upload.' };
   }
 }

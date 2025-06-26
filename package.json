@@ -23,7 +23,7 @@
     "reset": "npx prisma migrate reset",
     "studio": "npx prisma studio",
     "docker:run": "docker-compose up -d",
-    "copy:env": "cp .env.example .env"
+    "copy:env": "xcopy  .env.example .env"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
