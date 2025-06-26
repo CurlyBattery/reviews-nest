@@ -37,14 +37,14 @@ export class FilesService {
       throw new NotFoundException('File not found');
     }
 
-    const deletedUser = await this.repository.deleteFile({
+    const deletedFile = await this.repository.deleteFile({
       where: {
         id,
       },
     });
-    if (!deletedUser) {
+    if (!deletedFile) {
       throw new BadRequestException('File failed to delete');
     }
-    return deletedUser;
+    return deletedFile;
   }
 }
