@@ -154,13 +154,28 @@ export class UsersService {
     if (!existsUser) {
       throw new UserNotFoundException();
     }
+    const [uniqueEmailUser] = await this.repository.getUsers({
+      where: {
+        email: dto.email,
+      },
+    });
+    if (uniqueEmailUser && existsUser.email !== dto.email) {
+      throw new ConflictException('User already exists');
+    }
+    const [uniqueUsernameUser] = await this.repository.getUsers({
+      where: {
+        username: dto.username,
+      },
+    });
+    if (uniqueUsernameUser && existsUser.username !== dto.username) {
+      throw new ConflictException('User already exists');
+    }
 
     if (actualUserId) {
       if (actualUserId !== existsUser.id) {
         throw new ForbiddenException('Access denied');
       }
     }
-
     const updatedUser = await this.repository.updateUser({
       where: {
         id,

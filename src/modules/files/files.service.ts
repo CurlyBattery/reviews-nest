@@ -42,6 +42,7 @@ export class FilesService {
         id,
       },
     });
+
     if (!deletedFile) {
       throw new BadRequestException('File failed to delete');
     }

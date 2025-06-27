@@ -13,10 +13,10 @@ model User {
   email                     String          @unique
   username                  String          @unique
   hashPassword              String          @map("hash_password")
-  avatarId                  Int?            @map("avatar_id")
+  avatarId                  Int?            @unique() @map("avatar_id")
   role                      Role            @default(User)
   currentHashedRefreshToken String?
-  avatar                    File?           @relation(fields: [avatarId], references: [id], onDelete: Cascade)
+  avatar                    File?           @relation(fields: [avatarId], references: [id])
   userAndReviews            UserReview[]
   commentReviews            CommentReview[]
   resetTokens               ResetToken[]
@@ -117,7 +117,7 @@ model File {
   id       Int      @id @default(autoincrement())
   filename String
   data     Bytes
-  User     User[]
+  User     User?
   Review   Review[]
 
   @@map("files")

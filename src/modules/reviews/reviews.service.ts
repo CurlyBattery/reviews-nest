@@ -69,12 +69,24 @@ export class ReviewsService {
     });
     if (isWhereUndefined) {
       return await this.repository.getReviews({
-        select: ReviewsSelect,
+        include: {
+          userAndReviews: {
+            select: {
+              user: true,
+            },
+          },
+        },
       });
     }
     return await this.repository.getReviews({
       where,
-      select: ReviewsSelect,
+      include: {
+        userAndReviews: {
+          select: {
+            user: true,
+          },
+        },
+      },
     });
   }
 
@@ -97,7 +109,15 @@ export class ReviewsService {
         authorId,
       },
       select: {
-        review: true,
+        review: {
+          include: {
+            userAndReviews: {
+              select: {
+                user: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -107,7 +127,10 @@ export class ReviewsService {
         title: review['review'].title,
         category: review['review'].category,
         text: review['review'].text,
-        preview: review['review'].preview,
+        previewId: review['review'].previewId,
+        createdAt: review['review'].createdAt,
+        updatedAt: review['review'].updatedAt,
+        userAndReviews: review['review'].userAndReviews,
       };
     });
   }
