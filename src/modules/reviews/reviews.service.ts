@@ -7,12 +7,8 @@ import {
 } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { ReviewsRepository } from './reviews.repository';
-import { PaginationParamsDto } from './dto/pagination-params.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { SearchReviewsDto } from './dto/search-reviews.dto';
-import { Reviews, ReviewsSelect } from './entity/review.select';
-import { UsersSelect } from '../users/entity/users.select';
-import { SearchUsersDto } from '../users/dto/search-users.dto';
 import { FilesService } from '../files/files.service';
 
 @Injectable()
@@ -281,23 +277,4 @@ export class ReviewsService {
     });
     return dislike;
   }
-
-  // async getReviews({ limit = 10, offset = 0 }: PaginationParamsDto) {
-  //   const reviews = await this.repository.getReviews({
-  //     take: limit,
-  //     skip: offset,
-  //     include: {
-  //       likes: true,
-  //       dislikes: true,
-  //     },
-  //   });
-  //   const total = await this.repository.getReviewsCount();
-  //   return {
-  //     data: reviews,
-  //     total,
-  //     limit,
-  //     offset,
-  //     nextPage: total > offset ? offset + limit : null,
-  //   };
-  // }
 }

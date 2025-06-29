@@ -12,11 +12,11 @@ async function bootstrap() {
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
   );
   app.use(cookieParser());
-  const allowedOrigin = 'http://localhost:5173';
+  const allowedOrigin = ['http://localhost:5173', 'http://localhost:5174'];
 
   app.enableCors({
-    origin: allowedOrigin, // Точный origin, без *
-    credentials: true, // Обязательно для передачи куки
+    origin: allowedOrigin,
+    credentials: true,
   });
 
   await app.listen(3000);
