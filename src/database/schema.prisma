@@ -58,22 +58,24 @@ model Review {
 }
 
 model Like {
-  id       Int    @id @default(autoincrement())
-  userId   Int    @map("user_id")
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reviewId Int    @map("review_id")
-  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  id       Int     @id @default(autoincrement())
+  userId   Int     @map("user_id")
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewId Int     @map("review_id")
+  review   Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  hasLiked Boolean
 
   @@unique([reviewId, userId])
   @@map("likes")
 }
 
 model Dislike {
-  id       Int    @id @default(autoincrement())
-  userId   Int    @map("user_id")
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reviewId Int    @map("review_id")
-  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  id          Int     @id @default(autoincrement())
+  userId      Int     @map("user_id")
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewId    Int     @map("review_id")
+  review      Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  hasDisliked Boolean
 
   @@unique([reviewId, userId])
   @@map("dislikes")

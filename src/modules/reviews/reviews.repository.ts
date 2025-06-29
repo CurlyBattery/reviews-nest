@@ -131,12 +131,19 @@ export class ReviewsRepository {
     });
   }
 
-  async deleteLike(params: {
+  // async deleteLike(params: {
+  //   where: Prisma.LikeWhereUniqueInput;
+  //   select?: Prisma.LikeSelect;
+  // }): Promise<Like> {
+  //   const { where, select } = params;
+  //   return this.prisma.like.delete({ where, select });
+  // }
+  async updateLike(params: {
     where: Prisma.LikeWhereUniqueInput;
-    select?: Prisma.LikeSelect;
+    data: Prisma.LikeUpdateInput;
   }): Promise<Like> {
-    const { where, select } = params;
-    return this.prisma.like.delete({ where, select });
+    const { where, data } = params;
+    return this.prisma.like.update({ where, data });
   }
 
   async createDislike(params: {
@@ -169,11 +176,18 @@ export class ReviewsRepository {
     });
   }
 
-  async deleteDislike(params: {
+  async updateDislike(params: {
     where: Prisma.DislikeWhereUniqueInput;
-    select?: Prisma.DislikeSelect;
+    data: Prisma.DislikeUpdateInput;
   }): Promise<Dislike> {
-    const { where, select } = params;
-    return this.prisma.dislike.delete({ where, select });
+    const { where, data } = params;
+    return this.prisma.dislike.update({ where, data });
   }
+  // async deleteDislike(params: {
+  //   where: Prisma.DislikeWhereUniqueInput;
+  //   select?: Prisma.DislikeSelect;
+  // }): Promise<Dislike> {
+  //   const { where, select } = params;
+  //   return this.prisma.dislike.delete({ where, select });
+  // }
 }
