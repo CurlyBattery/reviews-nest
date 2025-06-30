@@ -73,10 +73,20 @@ export class ReviewsService {
           },
           _count: {
             select: {
-              likes: true,
-              dislikes: true,
+              likes: {
+                where: {
+                  hasLiked: true,
+                },
+              },
+              dislikes: {
+                where: {
+                  hasDisliked: true,
+                },
+              },
             },
           },
+          likes: true,
+          dislikes: true,
         },
       });
     }
@@ -90,10 +100,20 @@ export class ReviewsService {
         },
         _count: {
           select: {
-            likes: true,
-            dislikes: true,
+            likes: {
+              where: {
+                hasLiked: true,
+              },
+            },
+            dislikes: {
+              where: {
+                hasDisliked: true,
+              },
+            },
           },
         },
+        likes: true,
+        dislikes: true,
       },
     });
   }
@@ -212,6 +232,7 @@ export class ReviewsService {
         AND: [{ userId }, { reviewId: id }],
       },
     });
+    console.log(existsDislike);
     if (existsDislike && isActive === true) {
       await this.repository.updateDislike({
         where: {
